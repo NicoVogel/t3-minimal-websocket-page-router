@@ -62,7 +62,18 @@ function RoomPage() {
 
   const [message, setMessage] = useState("");
   const sendMessage = api.room.sendMessage.useMutation({});
+
   const [messages, setMessages] = useState<Message[]>([]);
+  api.room.onSendMessage.useSubscription(
+    { roomId },
+    {
+      onData: (message) => {
+        setMessages((m) => {
+          return [...m, message];
+        });
+      },
+    },
+  );
 
   if (!name) {
     return <SetName done={(n) => setName(n)} />;
